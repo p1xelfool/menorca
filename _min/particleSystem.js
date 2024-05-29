@@ -1,0 +1,9 @@
+/*
+----------------------------------------------------------------
+
+        trāma by p1xelfool
+
+----------------------------------------------------------------
+*/
+
+let ParticleSystem=function(i,s,h,e,l,p){this.particles=[],this.loc=createVector(0,random(-3,-4)),this.vel=createVector(0,0),this.acc=createVector(0,0),this.lifespan=160,this.initialVel=i,this.cor=s,this.stepToMiss=1,this.index=h,this.w=e,this.h=l,this.layer=p,this.pickArray=floor(random(0,modArray.length)),this.mod=modArray[this.pickArray][0],this.modMult=modArray[this.pickArray][1],this.GlSpeedX=0,this.GlSpeedY=.1*floor(random(2,5)),this.stopper=random(0,this.h-marginX)};ParticleSystem.prototype.update=function(){this.lifespan-=2;let i=this.particles.length;for(let s=i-1;s>=0;s--){let h=this.particles[s];h.update(),h.display(),h.isDead()&&this.particles.splice(s,1)}},ParticleSystem.prototype.isDead=function(){return this.lifespan<=0},ParticleSystem.prototype.force=function(){this.cent=createVector(0,this.h),this.p=p5.Vector.sub(this.cent,this.loc),this.p.normalize(),this.p.mult(this.initialVel),1==t&&this.lifespan>0&&this.applyForce(this.p)},ParticleSystem.prototype.applyForce=function(i){this.acc.add(i)},ParticleSystem.prototype.nu=function(){this.vel.add(this.acc),this.loc.add(this.vel),this.acc.mult(0),this.vel.limit(3),this.vel.mult(1),this.index==numSystems-1?t%this.stepToMiss==0&&this.loc.y<this.h-this.stopper&&this.particles.push(new Particle(0,this.loc.y,this.cor,this.index,this.w,this.h,this.layer,this.mod,this.modMult,this.GlSpeedX,this.GlSpeedY)):t%this.stepToMiss==0&&this.loc.y<this.h&&this.particles.push(new Particle(0,this.loc.y,this.cor,this.index,this.w,this.h,this.layer,this.mod,this.modMult,this.GlSpeedX,this.GlSpeedY))};
