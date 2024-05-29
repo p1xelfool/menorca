@@ -211,6 +211,7 @@ function draw() {
    
     ////IF NOT PAUSED
     if (running == true) {
+        t++;
 
         // // /////ROTATE THE SEED
         // if (t > 1 && t % 520 == 0) {
@@ -231,25 +232,26 @@ function draw() {
         }
  
 
-
-        pgMask.background(color(palette[palettePicker][0]));
+        if(frameCount==1){
+            pgMask.background(color(palette[palettePicker][0]));
+        }
         console.log(frameRate());
 
         //////BACKGROUND
-        if(frameCount==1){
-            for (let x = 0; x < pgMask.width; x++) {
-                for (let y = 0; y < pgMask.height; y++) {
-                    let index = (x + y * pgMask.width) * 4;
+        // if(frameCount==1){
+        //     for (let x = 0; x < pgMask.width; x++) {
+        //         for (let y = 0; y < pgMask.height; y++) {
+        //             let index = (x + y * pgMask.width) * 4;
 
-                    let bgColor = color(palette[palettePicker][0]);
+        //             let bgColor = color(palette[palettePicker][0]);
 
-                    pgMaskArray[index] = int(red(bgColor));
-                    pgMaskArray[index+1] = int(green(bgColor));;
-                    pgMaskArray[index+2] = int(blue(bgColor));;
-                    pgMaskArray[index+3] = 255;
-                }
-            }
-        }
+        //             pgMaskArray[index] = int(red(bgColor));
+        //             pgMaskArray[index+1] = int(green(bgColor));;
+        //             pgMaskArray[index+2] = int(blue(bgColor));;
+        //             pgMaskArray[index+3] = 255;
+        //         }
+        //     }
+        // }
 
         
         ////////////////////////
@@ -261,68 +263,60 @@ function draw() {
                         
                     }
                 
-                        //RUN SYSTEM
-                        let len = maskRunner.length;
-                    
-                        for (let i = len - 1; i >= 0; i--) {
-                        let p = this.maskRunner[i];
-                    
-                        p.add();
-                        p.run();
-                    
-                        //CHECK IF DEAD
-                        if (p.isDead()) {
-                            this.maskRunner.splice(i, 1);
-                        }
-                        }
+                       
         /////////////////////////
         ////////////////PARTICLE SYSTEM MASK
         
 
         pgMask.loadPixels();
 
+         //RUN SYSTEM
+         let len = maskRunner.length;
+                    
+         for (let i = len - 1; i >= 0; i--) {
+         let p = this.maskRunner[i];
+     
+         p.add();
+         p.run();
+     
+         //CHECK IF DEAD
+         if (p.isDead()) {
+             this.maskRunner.splice(i, 1);
+         }
+         }
         
-        
-        // for(let x = pgMask.width/2-recW/2; x<pgMask.width/2+recW/2; x++){
-        //     for(let y = pgMask.height/2-recH/2; y<pgMask.height/2+recH/2; y++){
-        for (let x = 0; x < pgMask.width; x++) {
-            for (let y = 0; y < pgMask.height; y++) {
-                let index = (x + y * pgMask.width) * 4;
+        // for (let x = 0; x < pgMask.width; x++) {
+        //     for (let y = 0; y < pgMask.height; y++) {
+        //         let index = (x + y * pgMask.width) * 4;
 
-                // pgMask.pixels[index] = 120;
-                // pgMask.pixels[index + 1] = 120;
-                // pgMask.pixels[index + 2] = 120;
-                // pgMask.pixels[index + 3] = 255;//pgMaskArray[index + 3];
+        //         // pgMask.pixels[index] = 120;
+        //         // pgMask.pixels[index + 1] = 120;
+        //         // pgMask.pixels[index + 2] = 120;
+        //         // pgMask.pixels[index + 3] = 255;//pgMaskArray[index + 3];
 
                 
-                pgMask.pixels[index] = pgMaskArray[index];
-                pgMask.pixels[index + 1] = pgMaskArray[index + 1];
-                pgMask.pixels[index + 2] = pgMaskArray[index + 2];
-                pgMask.pixels[index + 3] = pgMaskArray[index + 3];;//pgMaskArray[index + 3];
+        //         pgMask.pixels[index] = pgMaskArray[index];
+        //         pgMask.pixels[index + 1] = pgMaskArray[index + 1];
+        //         pgMask.pixels[index + 2] = pgMaskArray[index + 2];
+        //         pgMask.pixels[index + 3] = pgMaskArray[index + 3];;//pgMaskArray[index + 3];
 
 
 
-                // pgMask.pixels[index] = 0;
-                // pgMask.pixels[index + 1] = 0;
-                // pgMask.pixels[index + 2] = 0;
-                // pgMask.pixels[index + 3] = 0;
+        //         // pgMask.pixels[index] = 0;
+        //         // pgMask.pixels[index + 1] = 0;
+        //         // pgMask.pixels[index + 2] = 0;
+        //         // pgMask.pixels[index + 3] = 0;
 
             
-            }
-        }
-
-        
-
-        
-
-        pgShow();
+        //     }
+        // }
 
 
         pgMask.updatePixels();
-        
 
         imageMode(CENTER);
         image(pgMask, windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
+        
 
     } /////IF RUNNING
 
@@ -362,7 +356,7 @@ function windowResized() {
 
 
 function pgShow() {
-    t++;
+    
 
 
 
@@ -399,6 +393,8 @@ function begin(finalSeed) {
     pgMask.colorMode(HSB, 360, 100, 100, 100);
     pgMaskArray = [];
 
+
+
     /////RANDOM POSITION
     bornAtX = random(bornMargin, pgMask.width-bornMargin);
     bornAtY = random(bornMargin, pgMask.height-bornMargin);
@@ -407,12 +403,6 @@ function begin(finalSeed) {
     p5.disableFriendlyErrors = true;
     noSmooth();
 
-    let fIx = int(ww / r1 + 1);
-    let fIy = int(hh / r1 + 1);
-
-    //FINALIMAGE AND TEMP ARRAY OF PIXELS
-    finalImage = createImage(fIx, fIy);
-    finalImage2 = createImage(fIx, fIy);
 
     tempPixels = [];
     tempPixels2 = [];
@@ -504,3 +494,23 @@ function setupGif() {
 
 
 
+
+function updatePixelsGL(buf){
+
+    // New empty image
+    const img = new p5.Image(buf.width, buf.height);
+    
+    // Load like normal
+    img.loadPixels();
+    
+    // Seems silly that you have to loop the pixels to copy them but I couldn't figure out another way
+    for(let i =0; i<buf.pixels.length; i++){
+      img.pixels[i] = buf.pixels[i];
+    }
+    
+    // Update the pixels
+    img.updatePixels();
+    
+    // write the data to the screen
+    buf.image(img, -buf.width/2, -buf.height/2);
+  }

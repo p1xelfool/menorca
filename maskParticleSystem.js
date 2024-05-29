@@ -91,22 +91,32 @@ let ParticleMask = function (x, y, r, cor, alpha) {
     ///DEFINE PIXEL COLOR
     this.margin = 0;
     if(this.loc.x>this.margin && this.loc.x<pgMask.width-this.margin && this.loc.y>this.margin && this.loc.y<pgMask.height-this.margin){
-      // pgMask[this.index] = this.rrr;
-      // pgMask[this.index+1] = this.ggg;
-      // pgMask[this.index+2] = this.bbb;
-      // pgMask[this.index+3] = this.alpha;
+      
 
       ///ARRAY
       if(this.rDarker<0.8){
-        pgMaskArray[this.index] = this.rrr;//this.rrr;
-        pgMaskArray[this.index+1] = this.ggg;
-        pgMaskArray[this.index+2] = this.bbb;
-        pgMaskArray[this.index+3] = this.alpha;
+        /////DRAW TO ARRAY FIRST
+        // pgMaskArray[this.index] = this.rrr;//this.rrr;
+        // pgMaskArray[this.index+1] = this.ggg;
+        // pgMaskArray[this.index+2] = this.bbb;
+        // pgMaskArray[this.index+3] = this.alpha;
+
+        pgMask.pixels[this.index] = this.rrr;
+        pgMask.pixels[this.index+1] = this.ggg;
+        pgMask.pixels[this.index+2] = this.bbb;
+        pgMask.pixels[this.index+3] = this.alpha;
+
       }else{
-        pgMaskArray[this.index] = this.rrr;//this.rrr;
-        pgMaskArray[this.index+1] = this.ggg;
-        pgMaskArray[this.index+2] = this.bbb;
-        pgMaskArray[this.index+3] = 1;
+        // pgMaskArray[this.index] = this.rrr;//this.rrr;
+        // pgMaskArray[this.index+1] = this.ggg;
+        // pgMaskArray[this.index+2] = this.bbb;
+        // pgMaskArray[this.index+3] = 1;
+
+        pgMask.pixels[this.index] = this.rrr;
+        pgMask.pixels[this.index+1] = this.ggg;
+        pgMask.pixels[this.index+2] = this.bbb;
+        pgMask.pixels[this.index+3] = 1;
+
       }
       
 
