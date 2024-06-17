@@ -1,22 +1,20 @@
 /*
 ----------------------------------------------------------------
 
-        trāma by p1xelfool
+     by p1xelfool
 
 ----------------------------------------------------------------
 */
 
 let t = 0.0;
-let pg, pgMask;
+let pgMask;
 let pgMaskArray;
 let recording = true;
 let pgW, pgH;
 
-//SYSTEM
-let runners = null;
 
 //PALETTE
-let finalCol, finalCol1, finalCol2;
+let finalCol;
 let palette = [
                 ['#9d9e96', '#fe361f', '#00ff6c'],
 
@@ -65,44 +63,17 @@ let palettePicker;
 let colorPicker;
 let numSystems;
 
-let finalImage, finalImage2, tempPixels, tempPixels2;
 
 /////RESOLUTION
 let r1 = 10;
 let tempR = 5;
 let canvas;
 
-/////SEEDS
-let seeds;
-
-//////MARGINS
-let marginX;
-let marginY;
-
-let seedCount = 0;
-let seedIndex = 0;
-
-
 ////PAUSE PLAY
 let running = true;
 
-////MODULO
-let mod, modMult;
-let modArray = [[2,2],[2,3],[2,4],[4,2]];//[[2, 2],[2,3],[3, 5],[2,7],[5, 3], [5, 32]];//[[16, 16],[8, 8], [4,4]];//[[4,2],[6,2],[8,2],[16,2],[2,3],[2,4],[2,8],[2,16],[3,8],[3,16]];
-let margArray = [10, 20];
-
-////PARTICLE NOISE MASK THRESHOLD
-let noiseThresh2;
-
-////GLITCHNESS
-let hasGlitch;
-
 //////PARTICLE SYSTEM
 var maskRunner;
-let numParticles = 0;
-let rParticles = 0;
-let gParticles = 0;
-let bParticles = 0;
 let bornMargin;
 
 ///GIF
@@ -135,13 +106,6 @@ function setup() {
     frameRate(30);
     
 
-    seeds = [
-        [int(hl.random()*111111), int(hl.random()*111111), int(hl.random()*111111)], 
-    ]
-    
-    seeds[0,0];
-    randomSeed(seeds[0][0]);
-
     ///RES
     if(windowWidth > windowHeight){
         r1=tempR;
@@ -151,23 +115,6 @@ function setup() {
 
     ////PALETTE
     palettePicker = floor(hl.random(0, palette.length));
-
-
-        ///////MARGINS
-        let marginFinal = margArray[floor(hl.random(0, margArray.length))];
-        marginX = marginFinal;
-        marginY = marginFinal;
-
-
-   //NOISE THRESH
-   noiseThresh2 = hl.random(0.8, 0.99);
-
-   ///HAS GLITCH    
-//   if(random()>0.1){
-        hasGlitch = true;
-    // }else{
-    //     hasGlitch = false;
-    // }
 
     ///NUM SYSTEMS
     numSystems = floor(hl.random(3, 7.99));
@@ -196,7 +143,7 @@ function setup() {
       console.log(hl.token.getTraits());
 
     
-    begin(seeds[0][0]);
+    begin();
     setupGif();
 
    }
@@ -206,19 +153,6 @@ function draw() {
     ////IF NOT PAUSED
     if (running == true) {
         t++;
-
-        // // /////ROTATE THE SEED
-        // if (t > 1 && t % 520 == 0) {
-        //     ///ADDS TO SEED COUNT
-        //     if (seedCount < 2) {
-        //         seedCount++;
-        //     } else {
-        //         seedCount = 0;
-        //     }
-
-        //     begin(seeds[seedIndex][int(seedCount)]);
-        // }
-
 
         if(frameCount%100==0){
             bornAtX = hl.random(bornMargin, pgMask.width-bornMargin);
@@ -230,22 +164,6 @@ function draw() {
             pgMask.background(color(palette[palettePicker][0]));
         }
         // console.log(frameRate());
-
-        //////BACKGROUND
-        // if(frameCount==1){
-        //     for (let x = 0; x < pgMask.width; x++) {
-        //         for (let y = 0; y < pgMask.height; y++) {
-        //             let index = (x + y * pgMask.width) * 4;
-
-        //             let bgColor = color(palette[palettePicker][0]);
-
-        //             pgMaskArray[index] = int(red(bgColor));
-        //             pgMaskArray[index+1] = int(green(bgColor));;
-        //             pgMaskArray[index+2] = int(blue(bgColor));;
-        //             pgMaskArray[index+3] = 255;
-        //         }
-        //     }
-        // }
 
         
         ////////////////////////
@@ -280,31 +198,6 @@ function draw() {
          }
          }
         
-        // for (let x = 0; x < pgMask.width; x++) {
-        //     for (let y = 0; y < pgMask.height; y++) {
-        //         let index = (x + y * pgMask.width) * 4;
-
-        //         // pgMask.pixels[index] = 120;
-        //         // pgMask.pixels[index + 1] = 120;
-        //         // pgMask.pixels[index + 2] = 120;
-        //         // pgMask.pixels[index + 3] = 255;//pgMaskArray[index + 3];
-
-                
-        //         pgMask.pixels[index] = pgMaskArray[index];
-        //         pgMask.pixels[index + 1] = pgMaskArray[index + 1];
-        //         pgMask.pixels[index + 2] = pgMaskArray[index + 2];
-        //         pgMask.pixels[index + 3] = pgMaskArray[index + 3];;//pgMaskArray[index + 3];
-
-
-
-        //         // pgMask.pixels[index] = 0;
-        //         // pgMask.pixels[index + 1] = 0;
-        //         // pgMask.pixels[index + 2] = 0;
-        //         // pgMask.pixels[index + 3] = 0;
-
-            
-        //     }
-        // }
 
 
         pgMask.updatePixels();
@@ -346,13 +239,13 @@ function windowResized() {
     // }else{
     //     r1=tempR;
     // }
-    // begin(seeds[seedIndex][0]);
+    // begin();
 }
 
 
 
 
-function begin(finalSeed) {
+function begin() {
 
     t = 0.0;
     frameCount = 0;
@@ -361,7 +254,6 @@ function begin(finalSeed) {
     noiseSeed(4);
     strokeWeight(1.01);
     
-    randomSeed(finalSeed);
 
     //DEFINE PROPORTIONS
     let ww, hh;
@@ -369,9 +261,6 @@ function begin(finalSeed) {
         hh = 2560 / (innerWidth / innerHeight);
     let pgX = int(ww / r1 + 1);
     let pgY = int(hh / r1 + 1);
-    // pg = createGraphics(pgX, pgY);
-    // pg.pixelDensity(1);
-    // pg.colorMode(HSB);
 
 
     ///PGMASK
@@ -391,27 +280,7 @@ function begin(finalSeed) {
     p5.disableFriendlyErrors = true;
     noSmooth();
 
-
-    tempPixels = [];
-    tempPixels2 = [];
     pixelDensity(1);
-
-    ////SEED FOR COLORS AND SYSTEMS
-    ///PALETTES 
-    palette1 = [];
-
-    colorPicker = floor(hl.random(0, palette[palettePicker].length));
-    finalCol1 = color(palette[palettePicker][colorPicker]);
-    colorPicker = floor(hl.random(0, palette[palettePicker].length));
-    finalCol2 = color(palette[palettePicker][colorPicker]);
-
-    for (let i = 0; i < numSystems; i++) {
-        colorPicker = floor(hl.random(0, palette[palettePicker].length));
-        finalCol = color(palette[palettePicker][colorPicker]);
-        
-        palette1[i] = finalCol;
-    }
-
 
 }
 
@@ -428,10 +297,10 @@ function keyTyped() {
     if (key === 'p') {
         running = !running;
     } else if (key === 's') {
-        saveCanvas(int(seedCount) + '_trama' + '.png');
+        saveCanvas('image' + '.png');
     } else if (key === 'g') {
         makeGif = true;
-        begin(seeds[seedIndex][int(seedCount)]);
+        begin();
     }
 }
 
