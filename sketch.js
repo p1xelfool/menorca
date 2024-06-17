@@ -21,7 +21,7 @@ let palette = [
                 ['#9d9e96', '#fe361f', '#00ff6c', '#0000ff'],
                 ['#9f9a93', '#7f776b', '#151112', '#c6ff00'],
                 ['#767d72', '#fe0000', '#fd6d03', '#ff320b'],
-                ['#575757', '#0f0f0f', '#fe5d05', '#005bda'],
+                ['#000000', '#fe0000', '#EDF7F6', '#0000ff'],
                 ['#767676', '#0000ff', '#e2e6ec', '#00FF00'],
                 ['#b3b3b3', '#d7ff00', '#ff320b', '#aa0050'],                
                 ['#000000', '#d1fe39', '#e3ddd1', '#1dec57'],
@@ -30,7 +30,6 @@ let palette = [
                 ['#000000', '#002d97', '#e2e6ec', '#d1ff00'], 
 
                 ['#767676', '#aa0050', '#01867b', '#c6ff00', '#1b2548'],
-                ['#bebebe', '#d1ff00', '#b3f700', '#00c522', '#13181b'],
 
                 ['#575757', '#0f0f0f', '#ff77f3', '#c6ff00', '#fe5d05', '#005bda'],
                 
@@ -51,7 +50,6 @@ let paletteName = [
     ':4 x0/',
     
     ':5 xx',
-    ':5 xx-',
 
     ':6 xx%',
 ];
@@ -96,7 +94,7 @@ let circlePercentage;
 
 //////MAX TIME
 let maxTime;
-let maxTimeArray = [800, 1200, 1600];
+let maxTimeArray = [1000, 1200, 1600];
 
 
 
@@ -105,6 +103,10 @@ function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
     frameRate(30);
     
+
+    ////GENERATE SYSTEM
+    ////PARTICLE SYSYTEM
+    maskRunner = [];
 
     ///RES
     if(windowWidth > windowHeight){
@@ -119,8 +121,7 @@ function setup() {
     ///NUM SYSTEMS
     numSystems = floor(hl.random(3, 7.99));
 
-    ////PARTICLE SYSYTEM
-    maskRunner = [];
+    //BORN
     bornMargin = -50;//random(5, 15);
 
     //////RANDOM POSITION VS CONCENTRATED /// IF HIGHER MORE CONCENTRATED
@@ -140,7 +141,6 @@ function setup() {
         TimeGen: maxTime,
       });
 
-      console.log(hl.token.getTraits());
 
     
     begin();
@@ -224,7 +224,7 @@ function draw() {
         // GIF: Render when done
         if (makeGif &&
             !isGifExported &&
-            t>900
+            t>maxTime+160
         ) {
             print('Exporting GIF...');
             gif.render();
@@ -233,19 +233,21 @@ function draw() {
 }
 
 function windowResized() {
-    //resizeCanvas(windowWidth, windowHeight);
-    // if(windowWidth >= windowHeight){
-    //     r1=tempR;
-    // }else{
-    //     r1=tempR;
-    // }
-    // begin();
+    resizeCanvas(windowWidth, windowHeight);
+    if(windowWidth >= windowHeight){
+        r1=tempR;
+    }else{
+        r1=tempR;
+    }
+     begin();
 }
 
 
 
 
 function begin() {
+
+
 
     t = 0.0;
     frameCount = 0;
@@ -300,7 +302,6 @@ function keyTyped() {
         saveCanvas('image' + '.png');
     } else if (key === 'g') {
         makeGif = true;
-        begin();
     }
 }
 
@@ -310,8 +311,8 @@ function setupGif() {
 
     gif = new GIF({
         workers: 2,
-        quality: 10,
-        framerate: 30,
+        quality: 40,
+        framerate: 25,
         workerScript: './gif.worker.js'
     });
 
