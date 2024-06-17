@@ -18,61 +18,49 @@ let runners = null;
 //PALETTE
 let finalCol, finalCol1, finalCol2;
 let palette = [
-//['#1a3e92', '#c6c6d3', '#e35905'], ///////////////////////
-//['#767d72', '#cde500', '#fd6d03', '#ff320b'], /////////////////
-//['#ece6d6', '#f1bc00', '#191816', '#8a1616'], /////////////////
-    //['#d4d4d4', '#d5ff19', '#ebf700', '#90a548', '#bcc7a7', '#ef7731'], 
-    //['#bfb4ae', '#a7b0b5', '#caf501', '#bcb1ab', '#bac3c5'], 
-     //['#93989e', '#acef02', '#f49ebb', '#d5d6d8'],
-    // ['#000000','#93989e', '#acef02', '#0000FF', '#d5d6d8'],
-     //['#d2d1cf', '#e1e421', '#d2bfd2', '#cab16e', '#449db9', '#6cc4d8', '#55bcb3', '#728897', '#dae251', '#d5d8dd'],
-    
-      //['#10263b', '#143626', '#134151', '#3b7566','#ff3c00'],///////////////////
+                ['#9d9e96', '#fe361f', '#00ff6c'],
 
-     ['#a99c89', '#151112', '#c6ff00'],/////////////////////////
-     //['#a99c89', '#151112', '#f5800c'],
-    // ['#cbff00', '#f4f1ee', '#b084f7'],
-    // ['#d7fe52', '#e3ddd1', '#1dec57'],
-    // ['#d7fe52', '#e3ddd1', '#6800f6'],
-    // ['#d7fe52', '#e2e6ec', '#00d8ff'],
+                ['#9d9e96', '#fe361f', '#00ff6c', '#0000ff'],
+                ['#9f9a93', '#7f776b', '#151112', '#c6ff00'],
+                ['#767d72', '#fe0000', '#fd6d03', '#ff320b'],
+                ['#575757', '#0f0f0f', '#fe5d05', '#005bda'],
+                ['#767676', '#0000ff', '#e2e6ec', '#00FF00'],
+                ['#b3b3b3', '#d7ff00', '#ff320b', '#aa0050'],                
+                ['#000000', '#d1fe39', '#e3ddd1', '#1dec57'],
+                ['#000000', '#bec544', '#2b2d00', '#ff1500'], 
+                ['#000000', '#d1ff00', '#e2e6ec', '#00d8ff'], 
+                ['#000000', '#002d97', '#e2e6ec', '#d1ff00'], 
 
-     
-     
-    //  ['#000', '#bec544', '#ff1500'],
-    // ['#ece9db', '#ad7722', '#0152a3'],
-    
-    // ['#7689ff', '#5dffa0', '#e2e6ec'],
-    // ['#d7fe52', '#ed6ef7', '#eb4e4d'],
-    
+                ['#767676', '#aa0050', '#01867b', '#c6ff00', '#1b2548'],
+                ['#bebebe', '#d1ff00', '#b3f700', '#00c522', '#13181b'],
 
-    // ['#EB79F1', '#CCFD7A', '#0000FF'],
-    // ['#00FF00', '#00FF00', '#0000FF'],
+                ['#575757', '#0f0f0f', '#ff77f3', '#c6ff00', '#fe5d05', '#005bda'],
+                
 ];
 
 let paletteName = [
-    'RGB',
-    'Clock Sunset',
-    'Math Candy',
+    ':3 x00',
+    
+    ':4 x0:',
+    ':4 x0;',
+    ':4 x0[',
+    ':4 x0*',
+    ':4 x0#',
+    ':4 x0+',
+    ':4 x0!',
+    ':4 x0~',
+    ':4 x0>',
+    ':4 x0/',
+    
+    ':5 xx',
+    ':5 xx-',
 
-    'Camera Toy',
-    'Purple Trail',
-    'Code Breeze',
-    'Vanilla Night',
-    '0 Breeze',
-
-    'Velvet Circuit',
-    'Pixel Noon',
-    'Soft Array',
-    'Blue Key',
-
-    'Cotton PI',
-    'Boot Sunrise',
-    'Light Mint'
-]
+    ':6 xx%',
+];
 
 
-let palette1, palette2;
-let palettePicker, palettePicker2;
+let palette1;
+let palettePicker;
 
 let colorPicker;
 let numSystems;
@@ -81,7 +69,7 @@ let finalImage, finalImage2, tempPixels, tempPixels2;
 
 /////RESOLUTION
 let r1 = 10;
-let tempR = 4;
+let tempR = 5;
 let canvas;
 
 /////SEEDS
@@ -121,7 +109,7 @@ let bornMargin;
 let saveGif = false;
 
 let gif;
-let framesToSkip = 1;
+let framesToSkip = 2;
 let makeGif = false;
 let isGifExported = false;
 
@@ -135,6 +123,10 @@ let randomPos;
 ////CIRCLE PERCENTAGE
 let circlePercentage;
 
+//////MAX TIME
+let maxTime;
+let maxTimeArray = [800, 1200, 1600];
+
 
 
 
@@ -144,7 +136,7 @@ function setup() {
     
 
     seeds = [
-        [int($fx.rand()*111111), int($fx.rand()*111111), int($fx.rand()*111111)], 
+        [int(hl.random()*111111), int(hl.random()*111111), int(hl.random()*111111)], 
     ]
     
     seeds[0,0];
@@ -158,18 +150,17 @@ function setup() {
     }
 
     ////PALETTE
-    palettePicker = floor(random(0, palette.length));
-    palettePicker2 = floor(random(0, palette.length));
+    palettePicker = floor(hl.random(0, palette.length));
 
 
         ///////MARGINS
-        let marginFinal = margArray[floor(random(0, margArray.length))];
+        let marginFinal = margArray[floor(hl.random(0, margArray.length))];
         marginX = marginFinal;
         marginY = marginFinal;
 
 
    //NOISE THRESH
-   noiseThresh2 = random(0.8, 0.99);
+   noiseThresh2 = hl.random(0.8, 0.99);
 
    ///HAS GLITCH    
 //   if(random()>0.1){
@@ -179,33 +170,36 @@ function setup() {
     // }
 
     ///NUM SYSTEMS
-    numSystems = floor(random(3, 7.99));
+    numSystems = floor(hl.random(3, 7.99));
 
     ////PARTICLE SYSYTEM
     maskRunner = [];
-    bornMargin = random(5, 15);
+    bornMargin = -50;//random(5, 15);
 
-    //////RANDOM POSITION VS CONCENTRATED
-    randomPos = random(1);
+    //////RANDOM POSITION VS CONCENTRATED /// IF HIGHER MORE CONCENTRATED
+    randomPos = hl.random(0.4, 0.7);
 
     ////CIRCLE
-    circlePercentage = random(0.5, 0.9);
+    circlePercentage = hl.random(0.7, 0.9);
+
+    ////maxTime
+    let maxTimePicker = floor(hl.random(0, maxTimeArray.length));
+    maxTime = maxTimeArray[maxTimePicker];
     
     
+    hl.token.setTraits({
+        Palette: paletteName[palettePicker],
+        Colors: palette[palettePicker].length,
+        TimeGen: maxTime,
+      });
+
+      console.log(hl.token.getTraits());
 
     
     begin(seeds[0][0]);
     setupGif();
 
-    $fx.features({
-        'Palette': paletteName[palettePicker],
-        'Margin': marginX,
-        'Glitch': hasGlitch,
-        'Layers': numSystems
-      })
-
-      console.log('\n\n' + '    trāma by p1xelfool' + '\n\n' + '+++++++++++++++' + '\n\n' + '     Palette: ' + paletteName[palettePicker] + '\n' + '     Margin: ' + marginX + '\n' + '     Glitch: ' + hasGlitch + '\n' + '     Layers: ' + numSystems + '\n\n' + '+++++++++++++++');
-}
+   }
 
 function draw() {
    
@@ -227,15 +221,15 @@ function draw() {
 
 
         if(frameCount%100==0){
-            bornAtX = random(bornMargin, pgMask.width-bornMargin);
-            bornAtY = random(bornMargin, pgMask.height-bornMargin);
+            bornAtX = hl.random(bornMargin, pgMask.width-bornMargin);
+            bornAtY = hl.random(bornMargin, pgMask.height-bornMargin);
         }
  
 
         if(frameCount==1){
             pgMask.background(color(palette[palettePicker][0]));
         }
-        console.log(frameRate());
+        // console.log(frameRate());
 
         //////BACKGROUND
         // if(frameCount==1){
@@ -256,7 +250,8 @@ function draw() {
         
         ////////////////////////
         ////////////// PARTICLE SYSTEM MASK
-                    if(frameCount%10==0){
+            //////1000, 1500
+                    if(frameCount%10==0 && frameCount<maxTime){
                         for(let i=0; i<1; i++){
                             maskRunner.push(new particleSystemMask);
                         }
@@ -314,6 +309,7 @@ function draw() {
 
         pgMask.updatePixels();
 
+
         imageMode(CENTER);
         image(pgMask, windowWidth / 2, windowHeight / 2, windowWidth, windowHeight);
         
@@ -335,7 +331,7 @@ function draw() {
         // GIF: Render when done
         if (makeGif &&
             !isGifExported &&
-            t>519
+            t>900
         ) {
             print('Exporting GIF...');
             gif.render();
@@ -344,7 +340,7 @@ function draw() {
 }
 
 function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
+    //resizeCanvas(windowWidth, windowHeight);
     // if(windowWidth >= windowHeight){
     //     r1=tempR;
     // }else{
@@ -354,14 +350,6 @@ function windowResized() {
 }
 
 
-
-function pgShow() {
-    
-
-
-
-
-}
 
 
 function begin(finalSeed) {
@@ -396,8 +384,8 @@ function begin(finalSeed) {
 
 
     /////RANDOM POSITION
-    bornAtX = random(bornMargin, pgMask.width-bornMargin);
-    bornAtY = random(bornMargin, pgMask.height-bornMargin);
+    bornAtX = hl.random(bornMargin, pgMask.width-bornMargin);
+    bornAtY = hl.random(bornMargin, pgMask.height-bornMargin);
 
     canvas.imageSmoothingEnabled = false;
     p5.disableFriendlyErrors = true;
@@ -411,47 +399,23 @@ function begin(finalSeed) {
     ////SEED FOR COLORS AND SYSTEMS
     ///PALETTES 
     palette1 = [];
-    palette2 = [];
 
-    colorPicker = floor(random(0, palette[palettePicker].length));
+    colorPicker = floor(hl.random(0, palette[palettePicker].length));
     finalCol1 = color(palette[palettePicker][colorPicker]);
-    colorPicker = floor(random(0, palette[palettePicker].length));
+    colorPicker = floor(hl.random(0, palette[palettePicker].length));
     finalCol2 = color(palette[palettePicker][colorPicker]);
 
     for (let i = 0; i < numSystems; i++) {
-        colorPicker = floor(random(0, palette[palettePicker].length));
+        colorPicker = floor(hl.random(0, palette[palettePicker].length));
         finalCol = color(palette[palettePicker][colorPicker]);
         
         palette1[i] = finalCol;
-
-        colorPicker = floor(random(0, palette[palettePicker2].length));
-        finalCol = color(palette[palettePicker2][colorPicker]);
-        palette2[i] = finalCol;
     }
 
 
 }
 
 
-
-
-////////DRAW RECTANGLE
-function drawRect(W, H, X, Y, xArray, yArray, tempIndex){
-
-    if((xArray>pgMask.width/2+X-W/2 && xArray<pgMask.width/2+X+W/2) && (yArray>pgMask.height/2+Y-H/2 && yArray<pgMask.height/2+Y+H/2)){
-        pgMask.pixels[tempIndex] = 255;
-        pgMask.pixels[tempIndex + 1] = 255;
-        pgMask.pixels[tempIndex + 2] = 255;
-        pgMask.pixels[tempIndex + 3] = 255;
-
-        pgMaskArray[tempIndex] = 255;
-        pgMaskArray[tempIndex + 1] = 255;
-        pgMaskArray[tempIndex + 2] = 255;
-        pgMaskArray[tempIndex + 3] = 255;
-
-        //return true;
-    }
-}
 
 
 
@@ -477,7 +441,7 @@ function setupGif() {
 
     gif = new GIF({
         workers: 2,
-        quality: 40,
+        quality: 10,
         framerate: 30,
         workerScript: './gif.worker.js'
     });
@@ -494,23 +458,3 @@ function setupGif() {
 
 
 
-
-function updatePixelsGL(buf){
-
-    // New empty image
-    const img = new p5.Image(buf.width, buf.height);
-    
-    // Load like normal
-    img.loadPixels();
-    
-    // Seems silly that you have to loop the pixels to copy them but I couldn't figure out another way
-    for(let i =0; i<buf.pixels.length; i++){
-      img.pixels[i] = buf.pixels[i];
-    }
-    
-    // Update the pixels
-    img.updatePixels();
-    
-    // write the data to the screen
-    buf.image(img, -buf.width/2, -buf.height/2);
-  }

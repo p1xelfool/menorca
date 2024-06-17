@@ -17,7 +17,7 @@ let ParticleMask = function (x, y, r, cor, alpha) {
 
     this.r = r;//floor(random(0, 3));
     ///RANDOM DARKER
-    this.rDarker = random(1);
+    this.rDarker = hl.random(1);
     
     ////COLOR DIVISION
     this.rrr = int(red(color(cor)));
@@ -94,7 +94,7 @@ let ParticleMask = function (x, y, r, cor, alpha) {
       
 
       ///ARRAY
-      if(this.rDarker<0.8){
+      if(this.rDarker<0.6){
         /////DRAW TO ARRAY FIRST
         // pgMaskArray[this.index] = this.rrr;//this.rrr;
         // pgMaskArray[this.index+1] = this.ggg;
@@ -115,7 +115,7 @@ let ParticleMask = function (x, y, r, cor, alpha) {
         pgMask.pixels[this.index] = this.rrr;
         pgMask.pixels[this.index+1] = this.ggg;
         pgMask.pixels[this.index+2] = this.bbb;
-        pgMask.pixels[this.index+3] = 1;
+        pgMask.pixels[this.index+3] = 0;
 
       }
       
@@ -142,34 +142,40 @@ let ParticleMask = function (x, y, r, cor, alpha) {
   
   //////SYSTEM
   let particleSystemMask = function() {
-    this.lifespan = 150;//floor(random(10, 300));
+    this.lifespan = 300;//floor(random(10, 300));
     this.totalLife = this.lifespan;
     this.particlesMask = [];
 
-    this.applyForceTime = floor(random(5, 50));
       
     //COPY ORIGINAL VECTOR
     //this.origin = v.copy();
-    if(random(1)<randomPos){
-      this.loc = createVector(random(bornAtX-10, bornAtX+10), random(bornAtY-10, bornAtY+10));
+    ///////random pos diference
+    this.rPosDif = floor(hl.random(20, 50));
+    if(hl.random()<randomPos){
+      this.loc = createVector(hl.random(bornAtX-this.rPosDif, bornAtX+this.rPosDif), hl.random(bornAtY-this.rPosDif, bornAtY+this.rPosDif));
     }else{
-      this.loc = createVector(random(bornMargin, pgMask.width-bornMargin), random(bornMargin, pgMask.height-bornMargin));
+      this.loc = createVector(hl.random(bornMargin, pgMask.width-bornMargin), hl.random(bornMargin, pgMask.height-bornMargin));
     }
     
     this.vel = createVector();
     this.acc = createVector();
 
-    this.r = floor(random(0, 2));
+    this.r = floor(hl.random(0, 2));
 
     /////NUM TRAILS
-    this.numTrails = floor(random(40, 60)); //MAX 50
+    this.maxTraits = floor(200, 400);
+    this.numTrails = floor(hl.random(60, this.maxTraits)); //MAX 50
     
+    //////VARY THE AMOUNT OF THIN THINGS
+    this.isThing = hl.random(0.85, 0.9);
 
     ////RADIUS BRUSH
-    if(random(1)<0.9){
-      this.radiusInitial = map(this.numTrails, 40, 60, 19, 50);//10;//floor(random(5,20)); MAX 40
+    if(hl.random(1)<this.isThing){
+      this.radiusInitial = map(this.numTrails, 60, this.maxTraits, 30, 100);//10;//floor(random(5,20)); MAX 40
+      this.applyForceTime = floor(hl.random(20, 50));
     }else{
       this.radiusInitial = 2;
+      this.applyForceTime = floor(hl.random(20, 50));
     }
     
 
@@ -178,24 +184,25 @@ let ParticleMask = function (x, y, r, cor, alpha) {
 
     ////noise SUM
     this.noiseSumXArray = [-0.1];//[0, 0.1, 0.3, 0.5];//[-0.1, -0.05, 0, 0.05, 0.1, 0.15];
-    this.nSXPicker = floor(random(0, this.noiseSumXArray.length));
+    this.nSXPicker = floor(hl.random(0, this.noiseSumXArray.length));
     this.noiseSumX = this.noiseSumXArray[this.nSXPicker];
 
     this.noiseSumYArray = [-0.1, 0, 0.1];//[-0.05, 0, 0.05];
-    this.nSYPicker = floor(random(0, this.noiseSumYArray.length));
+    this.nSYPicker = floor(hl.random(0, this.noiseSumYArray.length));
     this.noiseSumY = this.noiseSumYArray[this.nSYPicker];
 
     this.noiseFreq = 10;
 
     // ///COLOR
-    this.colorPicker = floor(random(0, palette[palettePicker].length));
+    this.colorPicker = floor(hl.random(0, palette[palettePicker].length));
     this.color = color(palette[palettePicker][this.colorPicker]);
 
     //////ALPHA
-    this.alpha = 10;//floor(random(5, 10));
+    this.alpha = 255;//floor(random(5, 10));
 
     ///////CIRCLE?
-    this.isCircle = random(1);
+    this.isCircle = hl.random();
+    this.circleSpeed = 10;//floor(random(5,10));
 
     /////////DIRECTION
     // this.noiseSumXArray = [-0.1, -0.05, 0, 0.05, 0.1, 0.15];
@@ -292,8 +299,8 @@ let ParticleMask = function (x, y, r, cor, alpha) {
 
     this.radiusCircle = 0.4;
 
-    this.circleX = (sin(radians(t*10)) * this.radiusCircle);
-    this.circleY = (cos(radians(t*10)) * this.radiusCircle);
+    this.circleX = (sin(radians(t*this.circleSpeed)) * this.radiusCircle);
+    this.circleY = (cos(radians(t*this.circleSpeed)) * this.radiusCircle);
 
     if(this.isCircle < circlePercentage){
       this.forceToAdd = createVector(this.sx2, this.sy2);
@@ -340,7 +347,7 @@ let ParticleMask = function (x, y, r, cor, alpha) {
     for(let i = 0; i < this.numTrails; ++i){
       //if(this.loc.x<pgMask.width && this.loc.x>=0 && this.loc.y<pgMask.height && this.loc.y>=0){
         if(this.lifespan>0){
-            this.particlesMask.push(new ParticleMask(int(this.loc.x+(noise(i)*this.radius-this.radius/2)), int(this.loc.y)+(noise(i+90)*this.radius-this.radius/2), this.r, this.color, this.alpha));
+            this.particlesMask.push(new ParticleMask(int(this.loc.x+(noise(i/10)*this.radius-this.radius/2)), int(this.loc.y)+(noise(i/10+90)*this.radius-this.radius/2), this.r, this.color, this.alpha));
         }
         
 
