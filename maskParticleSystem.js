@@ -16,7 +16,7 @@ let ParticleMask = function (x, y, cor, alpha) {
     this.killingTime = 2.0;
 
     ///RANDOM DARKER
-    this.rDarker = hl.random(1);
+    this.rDarker = random(1);
     
     ////COLOR DIVISION
     this.rrr = int(red(color(cor)));
@@ -107,34 +107,37 @@ let ParticleMask = function (x, y, cor, alpha) {
     this.totalLife = this.lifespan;
     this.particlesMask = [];
 
+    this.timeOfCreation = t;
+
       
     ///////random pos diference
-    this.rPosDif = floor(hl.random(20, 50));
-    if(hl.random()<randomPos){
-      this.loc = createVector(hl.random(bornAtX-this.rPosDif, bornAtX+this.rPosDif), hl.random(bornAtY-this.rPosDif, bornAtY+this.rPosDif));
+    this.rPosDif = floor(random(20, 50));
+    if(random()<randomPos){
+      this.loc = createVector(random(bornAtX-this.rPosDif, bornAtX+this.rPosDif), random(bornAtY-this.rPosDif, bornAtY+this.rPosDif));
     }else{
-      this.loc = createVector(hl.random(bornMargin, pgMask.width-bornMargin), hl.random(bornMargin, pgMask.height-bornMargin));
+      this.loc = createVector(random(bornMargin, pgMask.width-bornMargin), random(bornMargin, pgMask.height-bornMargin));
     }
+
     
     this.vel = createVector();
     this.acc = createVector();
 
-    this.r = floor(hl.random(0, 2));
+    this.r = floor(random(0, 2));
 
     /////NUM TRAILS
     this.maxTraits = floor(200, 400);
-    this.numTrails = floor(hl.random(60, this.maxTraits)); //MAX 50
+    this.numTrails = floor(random(60, this.maxTraits)); //MAX 50
     
     //////VARY THE AMOUNT OF THIN THINGS
-    this.isThing = hl.random(0.85, 0.9);
+    this.isThing = random(0.85, 0.9);
 
     ////RADIUS BRUSH
-    if(hl.random(1)<this.isThing){
+    if(random(1)<this.isThing){
       this.radiusInitial = map(this.numTrails, 60, this.maxTraits, 30, 100);//10;//floor(random(5,20)); MAX 40
-      this.applyForceTime = floor(hl.random(20, 50));
+      this.applyForceTime = floor(random(20, 50));
     }else{
       this.radiusInitial = 2;
-      this.applyForceTime = floor(hl.random(20, 50));
+      this.applyForceTime = floor(random(20, 50));
     }
     
 
@@ -143,24 +146,26 @@ let ParticleMask = function (x, y, cor, alpha) {
 
     ////noise SUM
     this.noiseSumXArray = [-0.1];//[0, 0.1, 0.3, 0.5];//[-0.1, -0.05, 0, 0.05, 0.1, 0.15];
-    this.nSXPicker = floor(hl.random(0, this.noiseSumXArray.length));
+    this.nSXPicker = floor(random(0, this.noiseSumXArray.length));
     this.noiseSumX = this.noiseSumXArray[this.nSXPicker];
+    this.seedNoiseX = random(-1, 1);
 
     this.noiseSumYArray = [-0.1, 0, 0.1];//[-0.05, 0, 0.05];
-    this.nSYPicker = floor(hl.random(0, this.noiseSumYArray.length));
+    this.nSYPicker = floor(random(0, this.noiseSumYArray.length));
     this.noiseSumY = this.noiseSumYArray[this.nSYPicker];
+    this.seedNoiseY = random(-1, 1);
 
     this.noiseFreq = 10;
 
     // ///COLOR
-    this.colorPicker = floor(hl.random(0, palette[palettePicker].length));
+    this.colorPicker = floor(random(0, palette[palettePicker].length));
     this.color = color(palette[palettePicker][this.colorPicker]);
 
     //////ALPHA
     this.alpha = 255;
 
     ///////CIRCLE?
-    this.isCircle = hl.random();
+    this.isCircle = random();
     this.circleSpeed = 10;
 
   };
@@ -218,11 +223,13 @@ let ParticleMask = function (x, y, cor, alpha) {
     let noiseDist = 0.5;  
 
     //NOISE
-    this.sx = noise(this.loc.y/this.noiseFreq, this.loc.x/this.noiseFreq);
+    this.sx = noise(this.seedNoiseX*60/this.noiseFreq, this.seedNoiseY*60/this.noiseFreq+100);
     this.sx2 = map(this.sx, 0, 1, -noiseDist, noiseDist+this.noiseSumX);
       
-    this.sy = noise(this.loc.x/this.noiseFreq+10, frameCount*100);
+    this.sy = noise(this.seedNoiseY*60/this.noiseFreq+10, t*100);
     this.sy2 = map(this.sy, 0, 1, -noiseDist, noiseDist+this.noiseSumY);
+
+
 
     this.radiusCircle = 0.4;
 

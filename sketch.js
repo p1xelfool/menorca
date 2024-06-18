@@ -96,17 +96,20 @@ let circlePercentage;
 let maxTime;
 let maxTimeArray = [1000, 1200, 1600];
 
-
+/////////RANDOM SEED
+let randomSeedHash;
 
 
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
     frameRate(30);
-    
 
-    ////GENERATE SYSTEM
-    ////PARTICLE SYSYTEM
-    maskRunner = [];
+    ////random seed
+    randomSeedHash = hl.random(0,9999999999);//random(hl.random(0, 999999999999));
+    console.log(randomSeedHash);
+    noiseSeed(4);
+    randomSeed(randomSeedHash);
+
 
     ///RES
     if(windowWidth > windowHeight){
@@ -116,22 +119,22 @@ function setup() {
     }
 
     ////PALETTE
-    palettePicker = floor(hl.random(0, palette.length));
+    palettePicker = floor(random(0, palette.length));
 
     ///NUM SYSTEMS
-    numSystems = floor(hl.random(3, 7.99));
+    numSystems = floor(random(3, 7.99));
 
     //BORN
-    bornMargin = -50;//random(5, 15);
+    bornMargin = -40;//random(5, 15);
 
     //////RANDOM POSITION VS CONCENTRATED /// IF HIGHER MORE CONCENTRATED
-    randomPos = hl.random(0.4, 0.7);
+    randomPos = random(0.4, 0.7);
 
     ////CIRCLE
-    circlePercentage = hl.random(0.7, 0.9);
+    circlePercentage = random(0.7, 0.9);
 
     ////maxTime
-    let maxTimePicker = floor(hl.random(0, maxTimeArray.length));
+    let maxTimePicker = floor(random(0, maxTimeArray.length));
     maxTime = maxTimeArray[maxTimePicker];
     
     
@@ -140,6 +143,11 @@ function setup() {
         Colors: palette[palettePicker].length,
         TimeGen: maxTime,
       });
+
+    console.log(hl.token.getTraits());
+
+   
+
 
 
     
@@ -155,8 +163,8 @@ function draw() {
         t++;
 
         if(frameCount%100==0){
-            bornAtX = hl.random(bornMargin, pgMask.width-bornMargin);
-            bornAtY = hl.random(bornMargin, pgMask.height-bornMargin);
+            bornAtX = random(bornMargin, pgMask.width-bornMargin);
+            bornAtY = random(bornMargin, pgMask.height-bornMargin);
         }
  
 
@@ -176,7 +184,7 @@ function draw() {
                         
                     }
                 
-                       
+               
         /////////////////////////
         ////////////////PARTICLE SYSTEM MASK
         
@@ -234,11 +242,9 @@ function draw() {
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
-    if(windowWidth >= windowHeight){
-        r1=tempR;
-    }else{
-        r1=tempR;
-    }
+    
+    t=0;
+    frameCount=0;
      begin();
 }
 
@@ -247,22 +253,42 @@ function windowResized() {
 
 function begin() {
 
+    randomSeed(randomSeedHash);
+   
 
+    ////GENERATE SYSTEM
+    ////PARTICLE SYSYTEM
+    maskRunner = [];
+    
 
     t = 0.0;
     frameCount = 0;
 
     noCursor();
-    noiseSeed(4);
     strokeWeight(1.01);
     
 
     //DEFINE PROPORTIONS
     let ww, hh;
+    //     ww = 2560;
+    //     hh = 2560 / (innerWidth / innerHeight);
+
+
+    // let pgX = int(ww / r1 + 1);
+    // let pgY = int(hh / r1 + 1);
+
+    if(innerWidth>innerHeight){
         ww = 2560;
         hh = 2560 / (innerWidth / innerHeight);
-    let pgX = int(ww / r1 + 1);
-    let pgY = int(hh / r1 + 1);
+        pgX = int(ww / r1 + 1);
+        pgY = int(hh / r1 + 1);
+    }else{
+        
+        ww = 2560  / (innerHeight / innerWidth);
+        hh = 2560;
+        pgX = int(ww / r1 + 1);
+        pgY = int(hh / r1 + 1);
+    }
 
 
     ///PGMASK
@@ -275,8 +301,8 @@ function begin() {
 
 
     /////RANDOM POSITION
-    bornAtX = hl.random(bornMargin, pgMask.width-bornMargin);
-    bornAtY = hl.random(bornMargin, pgMask.height-bornMargin);
+    bornAtX = random(bornMargin, pgMask.width-bornMargin);
+    bornAtY = random(bornMargin, pgMask.height-bornMargin);
 
     canvas.imageSmoothingEnabled = false;
     p5.disableFriendlyErrors = true;
