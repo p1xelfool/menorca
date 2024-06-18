@@ -224,7 +224,7 @@ function draw() {
         // GIF: Render when done
         if (makeGif &&
             !isGifExported &&
-            t>maxTime+160
+            frameCount>maxTime+160
         ) {
             print('Exporting GIF...');
             gif.render();
